@@ -11,6 +11,9 @@ public class RouteConfiguration {
     @Bean
     public RouteLocator buildRouteLocator(RouteLocatorBuilder routeLocatorBuilder) {
         return routeLocatorBuilder.routes()
+                .route("department-service", r -> r.path("/departments/**")
+                        .filters(f -> f.stripPrefix(1))
+                        .uri("lb://department"))
                 .route("eureka-dashboard", r -> r.path("/eureka")
                         .filters(f -> f.stripPrefix(1))
                         .uri("lb://eureka"))
