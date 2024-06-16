@@ -15,8 +15,8 @@ public class RouteConfiguration {
                         .filters(f -> f.stripPrefix(1))
                         .uri("lb://eureka"))
                 .route("eureka", r -> r.path("/eureka/**")
-                        .uri("lb://eureka")
-                ).build();
+                        .uri("lb://eureka"))
+                .build();
     }
 
 }
