@@ -1,0 +1,19 @@
+services:
+  eureka:
+    build: eureka
+    image: staff-tracker-eureka
+    networks:
+      - staff-tracker
+
+  gateway:
+    build: gateway
+    image: staff-tracker-gateway
+    depends_on:
+      - eureka
+    networks:
+      - staff-tracker
+    ports:
+      - 8080:8080
+
+networks:
+  staff-tracker:
