@@ -15,5 +15,27 @@ services:
     ports:
       - 8080:8080
 
+  department:
+    build: department
+    image: staff-tracker-department
+    depends_on:
+      - eureka
+      - gateway
+    networks:
+      - staff-tracker
+
+  database:
+    image: postgres:alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - staff-tracker-data:/var/lib/postgresql/data
+    networks:
+      - staff-tracker
+
 networks:
   staff-tracker:
+
+volumes:
+  staff-tracker-data:
