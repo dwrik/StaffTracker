@@ -18,17 +18,23 @@ services:
   department:
     build: department
     image: staff-tracker-department
+    environment:
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME_DEPARTMENT}
     depends_on:
       - eureka
       - gateway
     networks:
       - staff-tracker
 
-  database:
+  department-db:
     image: postgres:alpine
     restart: unless-stopped
     environment:
+      - POSTGRES_USER=${DB_USERNAME}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME_DEPARTMENT}
     volumes:
       - staff-tracker-data:/var/lib/postgresql/data
     networks:
