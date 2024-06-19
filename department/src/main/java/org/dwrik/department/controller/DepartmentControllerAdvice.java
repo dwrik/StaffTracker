@@ -14,7 +14,7 @@ import java.util.Map;
 public class DepartmentControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({MethodArgumentNotValidException.class, DepartmentAlreadyExistsException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public Map<String, Object> handleValidationException(MethodArgumentNotValidException ex) {
         var errors = new HashMap<String, Object>();
         for (var error : ex.getBindingResult().getFieldErrors()) {
@@ -23,4 +23,9 @@ public class DepartmentControllerAdvice {
         return errors;
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(DepartmentAlreadyExistsException.class)
+    public Map<String, Object> handleDepartmentAlreadyExistsException(DepartmentAlreadyExistsException ex) {
+        return Map.of("error", ex.getMessage());
+    }
 }
