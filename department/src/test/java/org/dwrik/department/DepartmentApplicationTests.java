@@ -122,12 +122,13 @@ class DepartmentApplicationTests {
     @Test
     @Order(6)
     public void testDeletingOneDepartment() {
-        var beforeResponse = restTemplate.getForEntity(baseURL + "/1", Department.class);
-        assertEquals(HttpStatus.OK, beforeResponse.getStatusCode());
+        var beforeDeleteResponse = restTemplate.getForEntity(baseURL + "/1", Department.class);
+        assertEquals(HttpStatus.OK, beforeDeleteResponse.getStatusCode());
+
         restTemplate.delete(baseURL + "/1");
 
-        var afterResponse = restTemplate.getForEntity(baseURL + "/1", Department.class);
-        assertEquals(HttpStatus.NOT_FOUND, afterResponse.getStatusCode());
+        var afterDeleteResponse = restTemplate.getForEntity(baseURL + "/1", Department.class);
+        assertEquals(HttpStatus.NOT_FOUND, afterDeleteResponse.getStatusCode());
     }
 
     private List<Department> jsonToDepartmentList(String json) throws IOException {
