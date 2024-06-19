@@ -17,34 +17,37 @@ import static org.mockito.ArgumentMatchers.anyString;
 @ExtendWith(MockitoExtension.class)
 public class DepartmentServiceTests {
 
-	@Mock
-	private DepartmentRepository departmentRepository;
+    @Mock
+    private DepartmentRepository departmentRepository;
 
-	@InjectMocks
-	private DepartmentService departmentService;
+    @InjectMocks
+    private DepartmentService departmentService;
 
-	@Test
-	public void testCreateDepartment() {
-		var expected = new Department(1L, "Engineering");
-		var department = new Department(null, "Engineering");
+    @Test
+    public void testCreateDepartment() {
+        var expected = new Department(1L, "Engineering");
+        var department = new Department(null, "Engineering");
 
-		Mockito.when(departmentRepository.existsByName(anyString())).thenReturn(Boolean.FALSE);
-		Mockito.when(departmentRepository.save(department)).thenReturn(expected);
+        Mockito.when(departmentRepository.existsByName(anyString())).thenReturn(Boolean.FALSE);
+        Mockito.when(departmentRepository.save(department)).thenReturn(expected);
 
-		var actual = departmentService.createDepartment(department);
-		assertEquals(expected, actual);
-	}
+        var actual = departmentService.createDepartment(department);
+        assertEquals(expected, actual);
+    }
 
-	@Test
-	public void testCreateDepartmentWithInvalidName() {
-		var department = new Department(1L, "Engineering");
+    @Test
+    public void testCreateDepartmentWithInvalidName() {
+        var department = new Department(1L, "Engineering");
 
-		Mockito.when(departmentRepository.existsByName(anyString())).thenReturn(Boolean.TRUE);
-		var exception = assertThrows(DepartmentAlreadyExistsException.class,
-				() -> departmentService.createDepartment(department));
+        Mockito.when(departmentRepository.existsByName(anyString())).thenReturn(Boolean.TRUE);
+        var exception = assertThrows(DepartmentAlreadyExistsException.class,
+                () -> departmentService.createDepartment(department));
 
-		assertEquals(
-				"department with name '" + department.getName() + "' already exists",
-				exception.getMessage());
-	}
+        assertEquals(
+                "department with name '" + department.getName() + "' already exists",
+                exception.getMessage());
+    }
+
+    // todo complete writing unit tests for remaining methods
+
 }

@@ -28,100 +28,97 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @WebMvcTest(DepartmentController.class)
 public class DepartmentControllerTests {
 
-	@MockBean
-	private DepartmentService departmentService;
+    @MockBean
+    private DepartmentService departmentService;
 
-	@Autowired
-	private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@Test
-	public void testCreate() throws Exception {
-		var department = new Department(1L, "Engineering");
+    @Test
+    public void testCreate() throws Exception {
+        var department = new Department(1L, "Engineering");
 
-		Mockito.when(departmentService.createDepartment(department)).thenReturn(department);
-		var mvcResult = mockMvc.perform(post("/")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(departmentToJson(department)))
-						.andReturn();
+        Mockito.when(departmentService.createDepartment(department)).thenReturn(department);
+        var mvcResult = mockMvc.perform(post("/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(departmentToJson(department))).andReturn();
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(HttpStatus.OK.value(), status);
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(HttpStatus.OK.value(), status);
 
-		String body = mvcResult.getResponse().getContentAsString();
-		Department actualDepartment = jsonToDepartment(body);
-		assertEquals(department, actualDepartment);
-	}
+        String body = mvcResult.getResponse().getContentAsString();
+        Department actualDepartment = jsonToDepartment(body);
+        assertEquals(department, actualDepartment);
+    }
 
-	@Test
-	public void testGetOne() throws Exception {
-		var department = new Department(1L, "Engineering");
+    @Test
+    public void testGetOne() throws Exception {
+        var department = new Department(1L, "Engineering");
 
-		Mockito.when(departmentService.getDepartmentById(anyLong())).thenReturn(department);
-		var mvcResult = mockMvc.perform(get("/" + anyLong())
-				.accept(MediaType.APPLICATION_JSON))
-				.andReturn();
+        Mockito.when(departmentService.getDepartmentById(anyLong())).thenReturn(department);
+        var mvcResult = mockMvc.perform(get("/" + anyLong())
+                .accept(MediaType.APPLICATION_JSON)).andReturn();
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(HttpStatus.OK.value(), status);
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(HttpStatus.OK.value(), status);
 
-		String body = mvcResult.getResponse().getContentAsString();
-		Department actualDepartment = jsonToDepartment(body);
-		assertEquals(department, actualDepartment);
-	}
+        String body = mvcResult.getResponse().getContentAsString();
+        Department actualDepartment = jsonToDepartment(body);
+        assertEquals(department, actualDepartment);
+    }
 
-	@Test
-	public void testGetOneWithInvalidId() throws Exception {
-		Mockito.when(departmentService.getDepartmentById(anyLong())).thenReturn(null);
-		var mvcResult = mockMvc.perform(get("/" + anyLong())
-				.accept(MediaType.APPLICATION_JSON))
-				.andReturn();
+    @Test
+    public void testGetOneWithInvalidId() throws Exception {
+        Mockito.when(departmentService.getDepartmentById(anyLong())).thenReturn(null);
+        var mvcResult = mockMvc.perform(get("/" + anyLong())
+                .accept(MediaType.APPLICATION_JSON)).andReturn();
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(HttpStatus.NOT_FOUND.value(), status);
-	}
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(HttpStatus.NOT_FOUND.value(), status);
+    }
 
-	@Test
-	public void testGetAll() throws Exception {
-		var departmentList = List.of(
-				new Department(1L, "Engineering"),
-				new Department(2L, "Research & Development")
-		);
+    @Test
+    public void testGetAll() throws Exception {
+        var departmentList = List.of(
+                new Department(1L, "Engineering"),
+                new Department(2L, "Research & Development")
+        );
 
-		Mockito.when(departmentService.getAllDepartments()).thenReturn(departmentList);
-		var mvcResult = mockMvc.perform(get("/")
-				.accept(MediaType.APPLICATION_JSON))
-				.andReturn();
+        Mockito.when(departmentService.getAllDepartments()).thenReturn(departmentList);
+        var mvcResult = mockMvc.perform(get("/")
+                .accept(MediaType.APPLICATION_JSON)).andReturn();
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(HttpStatus.OK.value(), status);
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(HttpStatus.OK.value(), status);
 
-		String body = mvcResult.getResponse().getContentAsString();
-		List<Department> departments = jsonToDepartmentList(body);
-		assertEquals(departmentList, departments);
-	}
+        String body = mvcResult.getResponse().getContentAsString();
+        List<Department> departments = jsonToDepartmentList(body);
+        assertEquals(departmentList, departments);
+    }
 
-	@Test
-	public void testDelete() throws Exception {
-		Mockito.doNothing().when(departmentService).deleteDepartment(anyLong());
-		var mvcResult = mockMvc.perform(delete("/" + anyLong())).andReturn();
+    @Test
+    public void testDelete() throws Exception {
+        Mockito.doNothing().when(departmentService).deleteDepartment(anyLong());
+        var mvcResult = mockMvc.perform(delete("/" + anyLong())).andReturn();
 
-		int status = mvcResult.getResponse().getStatus();
-		assertEquals(HttpStatus.NO_CONTENT.value(), status);
-		verify(departmentService, times(1)).deleteDepartment(anyLong());
-	}
+        int status = mvcResult.getResponse().getStatus();
+        assertEquals(HttpStatus.NO_CONTENT.value(), status);
+        verify(departmentService, times(1)).deleteDepartment(anyLong());
+    }
 
-	private String departmentToJson(Department department) throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(department);
-	}
+    private String departmentToJson(Department department) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(department);
+    }
 
-	private Department jsonToDepartment(String json) throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(json, Department.class);
-	}
+    private Department jsonToDepartment(String json) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, Department.class);
+    }
 
-	private List<Department> jsonToDepartmentList(String json) throws JsonProcessingException {
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.readValue(json, new TypeReference<>(){});
-	}
+    private List<Department> jsonToDepartmentList(String json) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(json, new TypeReference<>() {
+        });
+    }
 }
