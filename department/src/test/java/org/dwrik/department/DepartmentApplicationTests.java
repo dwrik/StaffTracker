@@ -63,6 +63,7 @@ class DepartmentApplicationTests {
     }
 
     @Test
+    @Order(0)
     public void contextLoads() {
     }
 
