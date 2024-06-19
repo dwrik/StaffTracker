@@ -38,18 +38,15 @@ public class DepartmentControllerTests {
 	public void testCreate() throws Exception {
 		var department = new Department(1L, "Engineering");
 
-		// define mock & perform request
 		Mockito.when(departmentService.createDepartment(department)).thenReturn(department);
 		var mvcResult = mockMvc.perform(post("/")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(departmentToJson(department)))
 						.andReturn();
 
-		// assert status
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(HttpStatus.OK.value(), status);
 
-		// assert content
 		String body = mvcResult.getResponse().getContentAsString();
 		Department actualDepartment = jsonToDepartment(body);
 		assertEquals(department, actualDepartment);
@@ -59,17 +56,14 @@ public class DepartmentControllerTests {
 	public void testGetOne() throws Exception {
 		var department = new Department(1L, "Engineering");
 
-		// define mock & perform request
 		Mockito.when(departmentService.getDepartmentById(anyLong())).thenReturn(department);
 		var mvcResult = mockMvc.perform(get("/" + anyLong())
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
 
-		// assert status
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(HttpStatus.OK.value(), status);
 
-		// assert content
 		String body = mvcResult.getResponse().getContentAsString();
 		Department actualDepartment = jsonToDepartment(body);
 		assertEquals(department, actualDepartment);
@@ -77,13 +71,11 @@ public class DepartmentControllerTests {
 
 	@Test
 	public void testGetOneWithInvalidId() throws Exception {
-		// define mock & perform request
 		Mockito.when(departmentService.getDepartmentById(anyLong())).thenReturn(null);
 		var mvcResult = mockMvc.perform(get("/" + anyLong())
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
 
-		// assert status
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(HttpStatus.NOT_FOUND.value(), status);
 	}
@@ -95,17 +87,14 @@ public class DepartmentControllerTests {
 				new Department(2L, "Research & Development")
 		);
 
-		// define mock & perform request
 		Mockito.when(departmentService.getAllDepartments()).thenReturn(departmentList);
 		var mvcResult = mockMvc.perform(get("/")
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
 
-		// assert status
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(HttpStatus.OK.value(), status);
 
-		// assert content
 		String body = mvcResult.getResponse().getContentAsString();
 		List<Department> departments = jsonToDepartmentList(body);
 		assertEquals(departmentList, departments);
@@ -113,15 +102,11 @@ public class DepartmentControllerTests {
 
 	@Test
 	public void testDelete() throws Exception {
-		// define mock & perform request
 		Mockito.doNothing().when(departmentService).deleteDepartment(anyLong());
 		var mvcResult = mockMvc.perform(delete("/" + anyLong())).andReturn();
 
-		// assert status
 		int status = mvcResult.getResponse().getStatus();
 		assertEquals(HttpStatus.NO_CONTENT.value(), status);
-
-		// assert delete invocation
 		verify(departmentService, times(1)).deleteDepartment(anyLong());
 	}
 
