@@ -26,7 +26,7 @@ public class DepartmentServiceTests {
 	@Test
 	public void testCreateDepartment() {
 		var expected = new Department(1L, "Engineering");
-		var department = new Department(1L, "Engineering");
+		var department = new Department(null, "Engineering");
 
 		Mockito.when(departmentRepository.existsByName(anyString())).thenReturn(Boolean.FALSE);
 		Mockito.when(departmentRepository.save(department)).thenReturn(expected);
