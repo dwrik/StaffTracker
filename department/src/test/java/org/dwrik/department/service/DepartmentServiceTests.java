@@ -25,8 +25,8 @@ public class DepartmentServiceTests {
 
     @Test
     public void testCreateDepartment() {
-        var expected = new Department(1L, "Engineering");
-        var department = new Department(null, "Engineering");
+        var expected = new Department(1L, "Sales");
+        var department = new Department(null, "Sales");
 
         Mockito.when(departmentRepository.existsByName(anyString())).thenReturn(Boolean.FALSE);
         Mockito.when(departmentRepository.save(department)).thenReturn(expected);
@@ -37,7 +37,7 @@ public class DepartmentServiceTests {
 
     @Test
     public void testCreateDepartmentWithInvalidName() {
-        var department = new Department(1L, "Engineering");
+        var department = new Department(1L, "Sales");
 
         Mockito.when(departmentRepository.existsByName(anyString())).thenReturn(Boolean.TRUE);
         var exception = assertThrows(DepartmentAlreadyExistsException.class,
@@ -48,6 +48,6 @@ public class DepartmentServiceTests {
                 exception.getMessage());
     }
 
-    // todo complete writing unit tests for remaining methods
+    // todo write unit tests for remaining methods (do while at office)
 
 }
