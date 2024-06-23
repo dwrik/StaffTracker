@@ -1,7 +1,7 @@
 spring:
   application.name: department
   jpa:
-    hibernate.ddlAuto: update
+    hibernate.ddlAuto: create-drop
   datasource:
     url: jdbc:postgresql://department-db:5432/${DB_NAME}
     username: ${DB_USERNAME}
