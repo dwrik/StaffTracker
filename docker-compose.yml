@@ -36,7 +36,32 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME_DEPARTMENT}
     volumes:
-      - staff-tracker-data:/var/lib/postgresql/data
+      - staff-tracker-department-data:/var/lib/postgresql/data
+    networks:
+      - staff-tracker
+
+  employee:
+    build: employee
+    image: staff-tracker-employee
+    environment:
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME_EMPLOYEE}
+    depends_on:
+      - eureka
+      - gateway
+    networks:
+      staff-tracker:
+
+  employee-db:
+    image: postgres:alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME_EMPLOYEE}
+    volumes:
+      - staff-tracker-employee-data:/var/lib/postgresql/data
     networks:
       - staff-tracker
 
@@ -44,4 +69,5 @@ networks:
   staff-tracker:
 
 volumes:
-  staff-tracker-data:
+  staff-tracker-department-data:
+  staff-tracker-employee-data:
