@@ -15,6 +15,14 @@ services:
     ports:
       - 8080:8080
 
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    networks:
+      - staff-tracker
+    ports:
+      - 8085:8080
+
   department:
     build: department
     image: staff-tracker-department
