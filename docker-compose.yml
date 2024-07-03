@@ -4,6 +4,8 @@ services:
     image: staff-tracker-eureka
     networks:
       - staff-tracker
+    labels:
+      logs.enabled: false
 
   gateway:
     build: gateway
@@ -14,14 +16,8 @@ services:
       - staff-tracker
     ports:
       - 8080:8080
-
-  adminer:
-    image: adminer
-    restart: unless-stopped
-    networks:
-      - staff-tracker
-    ports:
-      - 8085:8080
+    labels:
+      logs.enabled: true
 
   department:
     build: department
@@ -35,18 +31,8 @@ services:
       - gateway
     networks:
       - staff-tracker
-
-  department-db:
-    image: postgres:alpine
-    restart: unless-stopped
-    environment:
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME_DEPARTMENT}
-    volumes:
-      - staff-tracker-department-data:/var/lib/postgresql/data
-    networks:
-      - staff-tracker
+    labels:
+      logs.enabled: true
 
   employee:
     build: employee
@@ -60,6 +46,26 @@ services:
       - gateway
     networks:
       staff-tracker:
+    labels:
+      logs.enabled: true
+
+  ###################
+  # Database services
+  ###################
+
+  department-db:
+    image: postgres:alpine
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME_DEPARTMENT}
+    volumes:
+      - staff-tracker-department-data:/var/lib/postgresql/data
+    networks:
+      - staff-tracker
+    labels:
+      logs.enabled: false
 
   employee-db:
     image: postgres:alpine
@@ -72,6 +78,86 @@ services:
       - staff-tracker-employee-data:/var/lib/postgresql/data
     networks:
       - staff-tracker
+    labels:
+      logs.enabled: false
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    networks:
+      - staff-tracker
+    ports:
+      - 8085:8080
+    labels:
+      logs.enabled: false
+
+  ##################
+  # Logging services
+  ##################
+
+  elasticsearch:
+    image: elasticsearch:${ES_STACK_VERSION}
+    volumes:
+      - staff-tracker-es-data:/usr/share/elasticsearch/data
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - staff-tracker
+    ports:
+      - 9200:9200
+    labels:
+      logs.enabled: false
+
+  logstash:
+    image: logstash:${ES_STACK_VERSION}
+    depends_on:
+      - elasticsearch
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    networks:
+      - staff-tracker
+    ports:
+      - 5044
+    labels:
+      logs.enabled: false
+
+  kibana:
+    image: kibana:${ES_STACK_VERSION}
+    depends_on:
+      - elasticsearch
+    volumes:
+      - staff-tracker-kibana-data:/usr/share/kibana/data
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - 5601:5601
+    networks:
+      - staff-tracker
+    labels:
+      logs.enabled: false
+
+  filebeat:
+    image: elastic/filebeat:${ES_STACK_VERSION}
+    user: "root"
+    depends_on:
+      - logstash
+    volumes:
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - staff-tracker
+    labels:
+      logs.enabled: false
 
 networks:
   staff-tracker:
@@ -79,3 +165,5 @@ networks:
 volumes:
   staff-tracker-department-data:
   staff-tracker-employee-data:
+  staff-tracker-kibana-data:
+  staff-tracker-es-data:
