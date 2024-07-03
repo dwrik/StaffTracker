@@ -1,4 +1,9 @@
 services:
+
+  #################
+  # Spring services
+  #################
+
   eureka:
     build: eureka
     image: staff-tracker-eureka
@@ -158,6 +163,30 @@ services:
       - staff-tracker
     labels:
       logs.enabled: false
+
+  #####################
+  # Monitoring services
+  #####################
+
+  prometheus:
+    image: prom/prometheus
+    depends_on:
+      - employee
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    networks:
+      - staff-tracker
+
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    networks:
+      - staff-tracker
 
 networks:
   staff-tracker:
