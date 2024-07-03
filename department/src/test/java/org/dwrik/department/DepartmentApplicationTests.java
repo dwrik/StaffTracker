@@ -80,7 +80,7 @@ class DepartmentApplicationTests {
     @Test
     @Order(2)
     public void testDepartmentCreatedWithValidName() {
-        var expected = new Department(null, "Engineering");
+        var expected = new Department(null, "Sales");
         var response = restTemplate.postForEntity(baseURL, expected, Department.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -90,8 +90,8 @@ class DepartmentApplicationTests {
     @Test
     @Order(3)
     public void testDepartmentNotCreatedWithExistingName() {
-        var existing = new Department(null, "Engineering");
-        var expected = Map.of("error", "department with name 'Engineering' already exists");
+        var existing = new Department(null, "Sales");
+        var expected = Map.of("error", "department with name 'Sales' already exists");
         var response = restTemplate.postForEntity(baseURL, existing, Map.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -101,7 +101,7 @@ class DepartmentApplicationTests {
     @Test
     @Order(4)
     public void testGettingAllDepartments() throws IOException {
-        var expected = List.of(new Department(1L, "Engineering"));
+        var expected = List.of(new Department(1L, "Sales"));
         var response = restTemplate.getForEntity(baseURL, String.class);
         List<Department> list = jsonToDepartmentList(response.getBody());
 
@@ -113,7 +113,7 @@ class DepartmentApplicationTests {
     @Test
     @Order(5)
     public void testGettingOneDepartment() {
-        var expected = new Department(1L, "Engineering");
+        var expected = new Department(1L, "Sales");
         var response = restTemplate.getForEntity(baseURL + "/1", Department.class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());

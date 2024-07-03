@@ -36,7 +36,7 @@ public class DepartmentControllerTests {
 
     @Test
     public void testCreate() throws Exception {
-        var department = new Department(1L, "Engineering");
+        var department = new Department(1L, "Sales");
 
         Mockito.when(departmentService.createDepartment(department)).thenReturn(department);
         var mvcResult = mockMvc.perform(post("/")
@@ -53,7 +53,7 @@ public class DepartmentControllerTests {
 
     @Test
     public void testGetOne() throws Exception {
-        var department = new Department(1L, "Engineering");
+        var department = new Department(1L, "Sales");
 
         Mockito.when(departmentService.getDepartmentById(anyLong())).thenReturn(department);
         var mvcResult = mockMvc.perform(get("/" + anyLong())
@@ -80,8 +80,8 @@ public class DepartmentControllerTests {
     @Test
     public void testGetAll() throws Exception {
         var departmentList = List.of(
-                new Department(1L, "Engineering"),
-                new Department(2L, "Research & Development")
+                new Department(1L, "Sales"),
+                new Department(2L, "Accounting")
         );
 
         Mockito.when(departmentService.getAllDepartments()).thenReturn(departmentList);
