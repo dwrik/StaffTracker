@@ -6,3 +6,7 @@ eureka:
     preferIpAddress: true
   client:
     fetchRegistry: false
+
+management:
+  endpoints.web.exposure.include: '*'
+  endpoint.health.show.details: true
