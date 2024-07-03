@@ -19,7 +19,8 @@ public class DepartmentController {
 
     @PostMapping
     public ResponseEntity<Department> create(@RequestBody @Valid Department department) {
-        return ResponseEntity.ok(departmentService.createDepartment(department));
+        var saved = departmentService.createDepartment(department);
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping
