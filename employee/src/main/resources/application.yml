@@ -7,6 +7,16 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driverClassName: org.postgresql.Driver
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    user: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
+  cloud:
+    stream.bindings:
+      performEmployeeDeletionBasedOnDepartment-in-0:
+        destination: departmentDeletedEvents
+        group: employeeConsumers
 
 eureka:
   client:
