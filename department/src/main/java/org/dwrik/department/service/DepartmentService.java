@@ -5,6 +5,7 @@ import org.dwrik.department.entity.Department;
 import org.dwrik.department.exception.DepartmentAlreadyExistsException;
 import org.dwrik.department.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,10 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class DepartmentService {
 
+    private final StreamBridge streamBridge;
     private final DepartmentRepository departmentRepository;
 
     @Autowired
-    public DepartmentService(DepartmentRepository departmentRepository) {
+    public DepartmentService(StreamBridge streamBridge, DepartmentRepository departmentRepository) {
+        this.streamBridge = streamBridge;
         this.departmentRepository = departmentRepository;
     }
 
@@ -42,6 +45,8 @@ public class DepartmentService {
     @Transactional
     public void deleteDepartment(Long id) {
         departmentRepository.deleteById(id);
+        streamBridge.send("departmentDeletedEvents", id);
+        log.info("Deletion of employees with department id '{}' has been initiated...", id);
     }
 
 }
