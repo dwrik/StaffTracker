@@ -31,6 +31,8 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME_DEPARTMENT}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
     depends_on:
       - eureka
       - gateway
@@ -46,6 +48,8 @@ services:
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_NAME=${DB_NAME_EMPLOYEE}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
     depends_on:
       - eureka
       - gateway
@@ -93,6 +97,17 @@ services:
       - staff-tracker
     ports:
       - 8085:8080
+    labels:
+      logs.enabled: false
+
+  ##################
+  # Messaging Queues
+  ##################
+
+  rabbitmq:
+    image: rabbitmq
+    networks:
+      - staff-tracker
     labels:
       logs.enabled: false
 
@@ -178,6 +193,8 @@ services:
       - 9090:9090
     networks:
       - staff-tracker
+    labels:
+      logs.enabled: false
 
   grafana:
     image: grafana/grafana
@@ -187,6 +204,8 @@ services:
       - 3000:3000
     networks:
       - staff-tracker
+    labels:
+      logs.enabled: false
 
 networks:
   staff-tracker:
