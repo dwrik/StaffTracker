@@ -69,6 +69,7 @@ to the `employee` service initiating the deletion of employees belonging to the 
 ```text
              departmentDeletedEvents
 department ---------------------------> employee
+                     RabbitMQ
 ```
 
 ### Logging and Analysis
