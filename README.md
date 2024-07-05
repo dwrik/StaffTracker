@@ -1,20 +1,22 @@
 # StaffTracker
 
-StaffTracker is an out of the box backend solution for staff tracking and management.
+StaffTracker is an out-of-the-box backend solution for staff tracking and management.
 
-Implemented using a fully containerized architecture, it allows anyone with docker installed on their system to get up and running in a matter of seconds.
-
-Key features include:
+Implemented using a fully containerized architecture, it allows anyone with docker installed
+on their system to get up and running in a matter of seconds. Key features include:
 - Department management
 - Employee management
 
 ## Architecture
 
-The application has been built from the ground up using a microservices architecture using Java based Spring Boot applications. The applications communicate with each other through HTTP REST calls or through asynchronous messaging depending on the use case.
+The application has been built from the ground up using a microservices architecture with
+Java based Spring Boot applications. The applications communicate with each other either through
+HTTP REST calls or through asynchronous messaging depending on the use case
 
 ### Services
 
-There are a total of 14 services containing 4 core microservices and 10 other supporting services spanning concerns like persistence, messaging, logging and monitoring.
+There are a total of 14 services containing 4 core microservices and 10 other supporting services
+spanning concerns like persistence, messaging, logging and monitoring.
 
 #### Microservices
 
@@ -57,25 +59,37 @@ There are a total of 14 services containing 4 core microservices and 10 other su
 
 ### Event-Driven Architecture
 
-*RabbitMQ* has been used for asynchronous communication between the services. This is useful when a request does not need to be processed immediately or takes significant amount of time to process that it doesn't make sense to wait for it using a synchronous request.
+*RabbitMQ* has been used for asynchronous communication between the services. This is useful
+when a request does not need to be processed immediately or takes significant amount of time
+to process that it doesn't make sense to wait for it using a synchronous request.
 
-In the context of this application, when deleting departments, the `department` service sends a message to the `employee` service initiating the deletion of employees belonging to the deleted department.
+In the context of this application, when deleting departments, the `department` service sends a message
+to the `employee` service initiating the deletion of employees belonging to the deleted department.
+
+```text
+             departmentDeletedEvents
+department ---------------------------> employee
+```
 
 ### Logging and Analysis
 
 The **ELK stack** (*Elasticsearch, Logstash, Kibana*) has been used here along with *Filebeat* for centralized logging.
 
-The logs are collected by *Filebeat* from the docker containers and sent over to the *Logstash* pipeline where they are processed before sending them over to *Elasticsearch* for storage and indexing. The stored logs are then visualized by *Kibana* and can be searched and filtered through using it's UI.
+The logs are collected by *Filebeat* from the docker containers and sent over to the *Logstash* pipeline
+where they are processed before sending them over to *Elasticsearch* for storage and indexing.
+The stored logs are then visualized by *Kibana* and can be searched and filtered through using it's UI.
 
-```
+```text
 Filbeat -> Logstash -> Elasticsearch -> Kibana
 ```
 
 ### Monitoring and Observability
 
-*Prometheus* has been used for monitoring the services. It coordinates with the `eureka` discovery service to collect metrics from all running services and their instances.
+*Prometheus* has been used for monitoring the services. It coordinates with the `eureka` discovery
+service to collect metrics from all running services and their instances.
 
-*Grafana* then uses this *Prometheus* instance as a datasource and visualizes the collected metrics using it's dashboards.
+*Grafana* then uses this *Prometheus* instance as a datasource and visualizes the
+collected metrics using its dashboards.
 
 ## Prerequisites
 
