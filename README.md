@@ -77,10 +77,10 @@ The **ELK stack** (*Elasticsearch, Logstash, Kibana*) has been used here along w
 
 The logs are collected by *Filebeat* from the docker containers and sent over to the *Logstash* pipeline
 where they are processed before sending them over to *Elasticsearch* for storage and indexing.
-The stored logs are then visualized by *Kibana* and can be searched and filtered through using it's UI.
+The stored logs are then visualized by *Kibana* and can be searched and filtered through using its UI.
 
 ```text
-Filbeat -> Logstash -> Elasticsearch -> Kibana
+Filebeat -> Logstash -> Elasticsearch -> Kibana
 ```
 
 ### Monitoring and Observability
